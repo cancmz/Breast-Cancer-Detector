@@ -9,7 +9,9 @@ import sys
 
 last_name_raw = None
 last_tc_raw = None
-last_diag_text = None
+last_diag_class = None
+last_confidence = None
+
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -96,16 +98,19 @@ def switch_language(lang_code):
         root.tc_label.config(text=f"{translations[current_lang]['label_tc']}: {tc_value}")
         root.diagnosis_label.config(text=diagnosis_line)
 
-    if hasattr(root, "name_label") and last_diag_text is not None:
+    if hasattr(root, "name_label") and last_diag_class is not None:
         name = last_name_raw if last_name_raw else translations[current_lang]["not_found"]
         tc = last_tc_raw if last_tc_raw else translations[current_lang]["not_found"]
 
         if tc != translations[current_lang]["not_found"]:
             tc = tc[:3] + '*' * (len(tc) - 5) + tc[-2] + tc[-1]
 
+        class_names = [translations[current_lang]["malignant"], translations[current_lang]["benign"]]
+        diag_line = f"{translations[current_lang]['label_diagnosis']}: {class_names[last_diag_class]} ({translations[current_lang]['confidence']}: %{last_confidence * 100:.2f})"
+
         root.name_label.config(text=f"{translations[current_lang]['label_name']}: {name}")
         root.tc_label.config(text=f"{translations[current_lang]['label_tc']}: {tc}")
-        root.diagnosis_label.config(text=f"{translations[current_lang]['label_diagnosis']}: {last_diag_text}")
+        root.diagnosis_label.config(text=diag_line)
 
 
 class CancerNet(nn.Module):
@@ -179,7 +184,7 @@ def predict_patient_file(file_path):
         class_names = [translations[current_lang]["malignant"], translations[current_lang]["benign"]]
         diagnosis_line = f"{class_names[pred]} (%{confidence * 100:.2f})"
 
-        return None, pred, name_raw, tc_raw, diagnosis_line
+        return None, pred, name_raw, tc_raw, pred, confidence
 
     except Exception as e:
         return f"Hata: {str(e)}", -1, None, None, None
@@ -189,11 +194,14 @@ def predict_patient_file(file_path):
 def handle_file(file_path):
     global last_name_raw, last_tc_raw, last_diag_text
 
-    result_text, diagnosis, name_raw, tc_raw, diagnosis_line = predict_patient_file(file_path)
+    result_text, diagnosis, name_raw, tc_raw, diag_class, confidence = predict_patient_file(file_path)
 
     last_name_raw = name_raw
     last_tc_raw = tc_raw
-    last_diag_text = diagnosis_line
+    last_diag_class = diag_class
+    last_confidence = confidence
+    class_names = [translations[current_lang]["malignant"], translations[current_lang]["benign"]]
+    diagnosis_line = f"{class_names[diag_class]} (%{confidence * 100:.2f})"
 
     for attr in ["name_label", "tc_label", "diagnosis_label"]:
         if hasattr(root, attr):

@@ -65,5 +65,5 @@ with torch.no_grad():
     accuracy = (predictions == y_test_tensor).float().mean()
     print(f"\nTest Accuracy: {accuracy.item() * 100:.2f}%")
 
-torch.save(model.state_dict(), os.path.join("..", "model", "model.pth"))
+torch.save(model.state_dict(), os.path.join("model", "model.pth"))
 print("The model saved successfully as ‘model.pth’.")
