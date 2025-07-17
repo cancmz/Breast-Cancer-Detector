@@ -1,7 +1,6 @@
 import ctypes
 import tkinter as tk
 from tkinter import filedialog
-from PIL import Image, ImageTk
 import torch
 import torch.nn as nn
 import numpy as np
