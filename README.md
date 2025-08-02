@@ -1,7 +1,7 @@
 # Breast Cancer Diagnosis App
 
 This is a bilingual desktop application (English and Turkish) built with Tkinter and PyTorch. It predicts whether a breast cancer case is malignant or benign using a trained neural network.
-> ️**For detailed scientific background, modeling pipeline, and evaluation results, please check the [project wiki](https://github.com/cancmz/Breast-Cancer-Detector/wiki).**
+> ️**For detailed medical and technical documentation, modeling pipeline, and evaluation results, please check the [project wiki](https://github.com/cancmz/Breast-Cancer-Detector/wiki).**
 ## Features
 - Drag-and-drop support for `.txt` patient files
 - Multi-language support (EN/TR)
